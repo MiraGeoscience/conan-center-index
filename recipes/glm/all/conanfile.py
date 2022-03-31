@@ -40,7 +40,14 @@ class GlmConan(ConanFile):
         return int(self.version.rsplit(".", 1)[-1])
 
     def _get_license(self):
-        manual = tools.load(os.path.join(self.source_folder, self._source_subfolder, "manual.md"))
-        begin = manual.find("### The Happy Bunny License (Modified MIT License)")
-        end = manual.find("\n![](./doc/manual/frontpage2.png)", begin)
-        return manual[begin:end]
+        manual_filepath = os.path.join(self.source_folder, self._source_subfolder, "manual.md")
+        if os.path.exists(manual_filepath):
+            manual = tools.load(manual_filepath)
+            begin = manual.find("### The Happy Bunny License (Modified MIT License)")
+            end = manual.find("\n![](./doc/manual/frontpage2.png)", begin)
+            return manual[begin:end]
+        else:
+            copying = tools.load(os.path.join(self.source_folder, self._source_subfolder, "copying.txt"))
+            begin = copying.find("^The Happy Bunny License (Modified MIT License)")
+            end = copying.find("\n===", begin)
+            return copying[begin:end]
